@@ -1,0 +1,24 @@
+{
+  "name": "@robert-labs/otter-query-engine-test",
+  "version": "0.0.1",
+  "description": "A small tool for inserting blocks in the WordPress Editor",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wordpress",
+    "blocks",
+    "qa",
+    "testing",
+    "otter"
+  ],
+  "author": "Soare Robert Daniel",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  }
+}
