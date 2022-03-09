@@ -10,7 +10,7 @@ declare type WhereQuery = {
 declare type TakeQuery = {
     shuffle?: boolean;
 };
-export declare class QueryQA {
+declare class QueryQA {
     private readonly sources;
     private source;
     private folder;

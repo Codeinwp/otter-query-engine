@@ -20,7 +20,7 @@ type FilesStructure = {
     }[]
 }
 
-export class QueryQA {
+class QueryQA {
     private readonly sources: { [key: string]: string };
     private source: string;
     private folder: string;
@@ -173,6 +173,8 @@ if (window || globalThis) {
     const global = window || globalThis;
     // @ts-ignore
     global.QueryQA = QueryQA;
+    // @ts-ignore
+    global.queryQA = new QueryQA();
 }
 
 declare global {

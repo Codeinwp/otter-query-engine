@@ -1,4 +1,4 @@
-export class QueryQA {
+class QueryQA {
     constructor() {
         this.sources = {
             "robert": "https://raw.githubusercontent.com/Soare-Robert-Daniel/otter-blocks-qa-templates/main/"
@@ -133,5 +133,7 @@ if (window || globalThis) {
     const global = window || globalThis;
     // @ts-ignore
     global.QueryQA = QueryQA;
+    // @ts-ignore
+    global.queryQA = new QueryQA();
 }
 export default QueryQA;
