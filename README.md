@@ -37,12 +37,17 @@ Insert all the files from the `blocks` folder in Robert's repo and specify the r
 new QueryQA().select('blocks').from('robert', 'https://raw.githubusercontent.com/Soare-Robert-Daniel/otter-blocks-qa-templates/main/').run()
 ```
 
-Insert all the files from the `blocks` folder which has ONLY the `flip` block.
+Insert all the files from the `blocks` folder which have the names `summer-breeze` and `countdown`.
+```javascript
+new QueryQA().select('blocks').where({ names: ['summer-breeze', 'countdown'] }).run()
+```
+
+Insert all the files from the `blocks` folder which have ONLY the `flip` block.
 ```javascript
 new QueryQA().select('blocks').where({ has: { blocks: ['flip'] }}).run()
 ```
 
-**[Short Syntax]** Insert all the files from the `blocks` folder which has ONLY the `flip` block.
+**[Short Syntax]** Insert all the files from the `blocks` folder which have ONLY the `flip` block.
 ```javascript
 new QueryQA().select('blocks').where({ has: ['flip'] }).run()
 ```
@@ -52,12 +57,12 @@ Insert all the files from the `blocks` folder which CONTAINS the `flip` block.
 new QueryQA().select('blocks').where({ has: ['flip'], mode: 'all' }).run()
 ```
 
-Insert all the files from the `blocks` folder which has ONLY the `count` plugin.
+Insert all the files from the `blocks` folder which have ONLY the `count` plugin.
 ```javascript
 new QueryQA().select('blocks').where({ has: { plugins: ['count'] } }).run()
 ```
 
-**[Short Syntax]** Insert all the files from the `blocks` folder which has ONLY the `count` plugin.
+**[Short Syntax]** Insert all the files from the `blocks` folder which have ONLY the `count` plugin.
 ```javascript
 new QueryQA().select('blocks').where({ has: ['count'] }).run()
 ```
