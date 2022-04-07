@@ -1,17 +1,21 @@
 {
-  "name": "@robert-labs/otter-query-engine-test",
-  "version": "0.0.1",
-  "description": "A small tool for inserting blocks in the WordPress Editor",
+  "name": "otter-query-engine",
+  "version": "1.0.0",
+  "description": "Tool testing for Otter plugin (Wordpress)",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "build": "npx tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --mode=production --node-env=production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "webpack serve"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Soare-Robert-Daniel/otter-query-engine.git"
+    "url": "https://github.com/Codeinwp/otter-query-engine.git"
   },
   "keywords": [
     "wordpress",
@@ -23,6 +27,15 @@
   "author": "Soare Robert Daniel",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^4.6.2"
+    "clean-webpack-plugin": "^4.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.2",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "wepack-cli": "^0.0.1-security"
+  },
+  "dependencies": {
+    "compare-versions": "^4.1.3"
   }
 }
