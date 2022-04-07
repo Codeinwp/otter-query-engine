@@ -6,7 +6,8 @@ type FileFeature = {
 type WhereQuery = {
     names?: string[],
     has?: string[] | FileFeature,
-    mode?: "all" | "exclusive"
+    mode?: "all" | "exclusive",
+    tags?: string[]
 }
 
 type TakeQuery = {
