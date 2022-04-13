@@ -198,6 +198,44 @@ class QueryQA {
         })
 
     }
+
+    createUI() {
+        const settingsBar = document.querySelector("#editor div.edit-post-header__settings")
+        if( ! settingsBar ) return;
+
+        const btn = document.createElement('button')
+        const hotBtn = document.createElement('button');
+        const input = document.createElement('input')
+
+        hotBtn.innerText = "Hot Run"
+        hotBtn.style.margin = "0px 3px"
+        hotBtn.style.padding = "5px 10px"
+        hotBtn.style.color = "red"
+        hotBtn.style.fontWeight = "700"
+        hotBtn.onclick = () => {
+            Function(input.value)();
+            navigator.clipboard.readText().then(
+                clipText => {
+                    input.value = clipText;
+                    Function(clipText)();
+                });
+        }
+        settingsBar.insertBefore(hotBtn, settingsBar.firstChild)
+
+        btn.innerText = "Run"
+        btn.style.margin = "0px 5px"
+        btn.style.padding = "5px 10px"
+        btn.onclick = () => {
+            Function(input.value)();
+        }
+        settingsBar.insertBefore(btn, settingsBar.firstChild)
+
+
+        input.placeholder = "Paste the query"
+        input.style.minWidth = "250px"
+        input.style.padding = "5px";
+        settingsBar.insertBefore(input, settingsBar.firstChild)
+    }
 }
 
 if (window || globalThis) {
@@ -207,6 +245,10 @@ if (window || globalThis) {
     global.QueryQA = QueryQA;
     // @ts-ignore
     global.queryQA = new QueryQA();
+    setTimeout(() => {
+        new QueryQA().createUI();
+    }, 1000)
+
 }
 
 declare global {
