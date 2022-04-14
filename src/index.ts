@@ -1,4 +1,4 @@
-import { satisfies } from 'compare-versions';
+import {satisfies} from 'compare-versions';
 
 type FileFeature = {
     blocks?: string[],
@@ -43,36 +43,36 @@ class QueryQA {
         this.source = "robert"
     }
 
-    select( folder: string ) {
+    select(folder: string) {
         this.folder = folder;
         return this;
     }
 
-    where( query: WhereQuery ) {
+    where(query: WhereQuery) {
         this.query = query;
         return this;
     }
 
     from(source: string, url?: string) {
         this.source = source;
-        if( url ) {
+        if (url) {
             this.sources[this.source] = url
         }
         return this;
     }
 
-    take( maxResults: number, options: TakeQuery ) {
+    take(maxResults: number, options: TakeQuery) {
         this.maxResults = maxResults
         this.takeQuery = options
         return this;
     }
 
     async build() {
-        if( this.source === undefined ) {
+        if (this.source === undefined) {
             console.warn("The source is undefined! Use '.from()' function to set a source.")
             return;
         }
-        if( this.folder === undefined ) {
+        if (this.folder === undefined) {
             console.warn("The folder is undefined! Use '.select()' function to set a folder.")
             return;
         }
@@ -92,81 +92,81 @@ class QueryQA {
         }
 
         const index: FilesStructure = await respIndex.json();
-        let validFiles = index?.files?.filter( file => {
-            if( this.query === undefined ) {
+        let validFiles = index?.files?.filter(file => {
+            if (this.query === undefined) {
                 return true;
             }
-            
-            if( this.query?.names?.includes(file.name) ) {
+
+            if (this.query?.names?.includes(file.name)) {
                 return true;
             }
 
             let valid = true;
 
-            if( this.query.mode === undefined || this.query.mode === "exclusive" ) {
-                if( Array.isArray( this.query?.has) ) {
-                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.every( blockSlug => (this.query?.has as string[])?.includes( blockSlug ))
+            if (this.query.mode === undefined || this.query.mode === "exclusive") {
+                if (Array.isArray(this.query?.has)) {
+                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.every(blockSlug => (this.query?.has as string[])?.includes(blockSlug))
                 } else {
-                    if( this.query?.has?.blocks !== undefined && file?.has?.blocks?.every( blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug)) ) {
+                    if (this.query?.has?.blocks !== undefined && file?.has?.blocks?.every(blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug))) {
                         valid = true;
                     }
-                    if( this.query?.has?.plugins !== undefined && file?.has?.plugins?.every( pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug)) ) {
+                    if (this.query?.has?.plugins !== undefined && file?.has?.plugins?.every(pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug))) {
                         valid = true;
                     }
                 }
             } else {
-                if( Array.isArray( this.query?.has) ) {
-                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.some( blockSlug => (this.query?.has as string[])?.includes( blockSlug ))
+                if (Array.isArray(this.query?.has)) {
+                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.some(blockSlug => (this.query?.has as string[])?.includes(blockSlug))
                 } else {
-                    if( this.query?.has?.blocks !== undefined && file?.has?.blocks?.some( blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug)) ) {
+                    if (this.query?.has?.blocks !== undefined && file?.has?.blocks?.some(blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug))) {
                         valid = true;
                     }
-                    if( this.query?.has?.plugins !== undefined && file?.has?.plugins?.some( pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug)) ) {
+                    if (this.query?.has?.plugins !== undefined && file?.has?.plugins?.some(pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug))) {
                         valid = true;
                     }
                 }
             }
 
-            if( this.query?.tags ) {
-                if( this.query.mode === undefined || this.query.mode === "exclusive" ) {
-                    valid = valid && Boolean(file?.tags?.every( blockTag => this.query?.tags?.includes( blockTag )))
+            if (this.query?.tags) {
+                if (this.query.mode === undefined || this.query.mode === "exclusive") {
+                    valid = valid && Boolean(file?.tags?.every(blockTag => this.query?.tags?.includes(blockTag)))
                 } else {
-                    valid = valid && Boolean(file?.tags?.some( blockTags => this.query?.tags?.includes( blockTags )))
+                    valid = valid && Boolean(file?.tags?.some(blockTags => this.query?.tags?.includes(blockTags)))
                 }
             }
 
-            if( this.query?.version ) {
-                valid = valid && satisfies( file.version, this.query.version ) 
+            if (this.query?.version) {
+                valid = valid && satisfies(file.version, this.query.version)
             }
 
             return valid;
         });
 
-        if( this.takeQuery?.shuffle ) {
+        if (this.takeQuery?.shuffle) {
             validFiles = validFiles
-                ?.map(value => ({ value, sort: Math.random() }))
+                ?.map(value => ({value, sort: Math.random()}))
                 .sort((a, b) => a.sort - b.sort)
-                .map(({ value }) => value)
+                .map(({value}) => value)
         }
 
-        if( this.maxResults ) {
+        if (this.maxResults) {
             validFiles = validFiles?.slice(0, this.maxResults)
         }
 
         return {
             files: validFiles,
-            urls: validFiles?.map(({ name }) => `${mainPath}/${name}.json`)
+            urls: validFiles?.map(({name}) => `${mainPath}/${name}.json`)
         }
     }
 
     async run() {
-        const { urls, files } = (await this.build()) || { urls: [] as string[]};
+        const {urls, files} = (await this.build()) || {urls: [] as string[]};
 
         console.groupCollapsed(`Fetching ${urls?.length} files!`)
-        console.table( files.map(({ name }) => name))
+        console.table(files.map(({name}) => name))
         console.groupEnd()
 
-        urls?.forEach( url => {
+        urls?.forEach(url => {
             try {
                 setTimeout(() => {
                     fetch(url, {
@@ -180,7 +180,7 @@ class QueryQA {
                             else throw new Error("Status code error: " + res.status)
                         })
                         .then(data => {
-                            if( window.wp ) {
+                            if (window.wp) {
                                 const block = wp?.blocks?.parse(data?.content)
                                 if (block) {
                                     wp?.data?.dispatch('core/block-editor')?.insertBlocks(block)
@@ -201,16 +201,17 @@ class QueryQA {
 
     createUI() {
         const settingsBar = document.querySelector("#editor div.edit-post-header__settings")
-        if( ! settingsBar ) return;
+        if (!settingsBar) return;
 
         const btn = document.createElement('button')
         const hotBtn = document.createElement('button');
         const input = document.createElement('input')
+        const docs = document.createElement('a')
 
-        hotBtn.innerText = "Hot Run"
-        hotBtn.style.margin = "0px 3px"
+        hotBtn.innerText = "Quick"
+        hotBtn.style.marginRight = "5px"
         hotBtn.style.padding = "5px 10px"
-        hotBtn.style.color = "red"
+        //hotBtn.style.color = "red"
         hotBtn.style.fontWeight = "700"
         hotBtn.onclick = () => {
             Function(input.value)();
@@ -230,11 +231,24 @@ class QueryQA {
         }
         settingsBar.insertBefore(btn, settingsBar.firstChild)
 
-
         input.placeholder = "Paste the query"
         input.style.minWidth = "250px"
         input.style.padding = "5px";
         settingsBar.insertBefore(input, settingsBar.firstChild)
+
+        docs.href = "https://github.com/Codeinwp/otter-query-engine/blob/master/README.md"
+        docs.target = "_blank"
+        docs.innerHTML = `<svg width="24px" height="24px" style="position: absolute" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M8,3 L8,17 L19,17 L19,3.5 C19,3.22385763 18.7761424,3 18.5,3 L8,3 Z M7,3 L6.5,3 C5.67157288,3 5,3.67157288 5,4.5 L5,17.4998169 C5.41783027,17.1859724 5.93719704,17 6.5,17 L7,17 L7,3 Z M4.15121433,20.3582581 C4.05793442,20.2674293 4,20.1404803 4,20 L4,4.5 C4,3.11928813 5.11928813,2 6.5,2 L18.5,2 C19.3284271,2 20,2.67157288 20,3.5 L20,20.5 C20,21.3284271 19.3284271,22 18.5,22 L6.5,22 C5.42082093,22 4.50134959,21.3162099 4.15121433,20.3582581 L4.15121433,20.3582581 Z M19,18 L6.5,18 C5.67157288,18 5,18.6715729 5,19.5 C5,20.3284271 5.67157288,21 6.5,21 L18.5,21 C18.7761424,21 19,20.7761424 19,20.5 L19,18 Z M10.5,10 C10.2238576,10 10,9.77614237 10,9.5 C10,9.22385763 10.2238576,9 10.5,9 L16.5,9 C16.7761424,9 17,9.22385763 17,9.5 C17,9.77614237 16.7761424,10 16.5,10 L10.5,10 Z M10.5,8 C10.2238576,8 10,7.77614237 10,7.5 C10,7.22385763 10.2238576,7 10.5,7 L14.5,7 C14.7761424,7 15,7.22385763 15,7.5 C15,7.77614237 14.7761424,8 14.5,8 L10.5,8 Z"/>
+</svg>
+`
+        docs.style.display = "inline-flex"
+        docs.style.alignItems = "center"
+        docs.style.justifyContent = "center"
+        docs.style.textDecoration = "none"
+        docs.style.marginRight = "5px"
+        docs.style.padding = "5px 10px"
+        settingsBar.insertBefore(docs, settingsBar.firstChild)
     }
 }
 
@@ -253,6 +267,7 @@ if (window || globalThis) {
 
 declare global {
     let wp: any;
+
     interface Window {
         wp: any
     }
