@@ -102,7 +102,7 @@ class QueryQA {
                 return true;
             }
 
-            let valid = true;
+            let valid = !Boolean(this.query?.names) || !Boolean(this.query?.has || !Boolean(this.query?.tags) || !Boolean(this.query?.version)) ;
 
             if (this.query.mode === undefined || this.query.mode === "exclusive") {
                 if (Array.isArray(this.query?.has)) {
