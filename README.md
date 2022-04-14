@@ -9,7 +9,7 @@
 Methods:
 1. Load the `dist/index.js` as js file in the page. See `index.html`
 ```html
- <script type="module" defer src="https://cdn.jsdelivr.net/gh/Soare-Robert-Daniel/otter-query-engine@master/dist/index.js"></script>
+ <script type="module" defer src="https://cdn.jsdelivr.net/gh/Codeinwp/otter-query-engine@master/dist/index.js"></script>
 ```
 2. Inject the script via js and CDN link. *You also use [Snippets](https://developer.chrome.com/docs/devtools/javascript/snippets/).*
 ```javascript
