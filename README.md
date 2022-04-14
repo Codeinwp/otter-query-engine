@@ -3,24 +3,39 @@
 
 ## Getting Started
 
-Create repo or fork [this](https://github.com/Soare-Robert-Daniel/otter-blocks-qa-templates). Make a folder, and add some exported blocks in it.
+[Optional] Fork [this repo](https://github.com/Codeinwp/otter-blocks-qa-templates). Make a folder, and add some exported blocks in it.
 
-#### Load the Query Engine in your browser.
+## Load the Query Engine in your browser.
 Methods:
-1. Go to `dist/index.js`, copy the code without the `export default QueryQA;` line, then paste it in to the browser Console.
-2. Load the `dist/index.js` as js file in the page. See `index.html`
+1. Load the `dist/index.js` as js file in the page. See `index.html`
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/Soare-Robert-Daniel/otter-query-engine@master/dist/index.js"></script>
+ <script type="module" defer src="https://cdn.jsdelivr.net/gh/Soare-Robert-Daniel/otter-query-engine@master/dist/index.js"></script>
 ```
-3. Inject the script via js and CDN link. *You also use [Snippets](https://developer.chrome.com/docs/devtools/javascript/snippets/).*
+2. Inject the script via js and CDN link. *You also use [Snippets](https://developer.chrome.com/docs/devtools/javascript/snippets/).*
 ```javascript
-var s = document.createElement('script');
-s.type = "module";
-s.src = "https://cdn.jsdelivr.net/gh/Soare-Robert-Daniel/otter-query-engine@master/dist/index.js";
-(document.head||document.documentElement).appendChild(s);
+window.addEventListener('load', (event) => {
+    let count = 0;
+    const interv = setInterval( () => {
+        count ++;
+        const settingsBar = document.querySelector("#editor div.edit-post-header__settings")
+        if( settingsBar ) {
+            var s = document.createElement('script');
+            s.defer = true;
+            s.type = "module";
+            s.src = "https://cdn.jsdelivr.net/gh/Codeinwp/otter-query-engine@master/dist/index.js";
+            (document.head||document.documentElement).appendChild(s);
+            clearInterval(interv);
+        }
+        if(count > 6) {
+            clearInterval(interv);
+        }
+    }, 500);
+});
 ```
 
-#### Usage
+**You can also use the Chrome extension. [Link](https://github.com/Codeinwp/otter-blocks-qa-templates)**
+
+## Usage
 
 Insert all the files from the `blocks` folder.
 ```javascript
