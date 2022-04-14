@@ -37,10 +37,11 @@ class QueryQA {
 
     constructor() {
         this.sources = {
+            "otter": "https://raw.githubusercontent.com/Codeinwp/otter-blocks-qa-templates/main/",
             "robert": "https://raw.githubusercontent.com/Soare-Robert-Daniel/otter-blocks-qa-templates/main/"
         }
         this.folder = "blocks"
-        this.source = "robert"
+        this.source = "otter"
     }
 
     select(folder: string) {
