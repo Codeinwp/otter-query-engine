@@ -1,6 +1,9 @@
 # Otter Tool Testing - Query Engine
 > It allows you to import blocks exported in JSON file from GitHub.
 
+![image](https://user-images.githubusercontent.com/17597852/163563409-09250881-d576-4b0c-bfd2-6e221a0b467c.png)
+
+
 ## Getting Started
 
 [Optional] Fork [this repo](https://github.com/Codeinwp/otter-blocks-qa-templates). Make a folder, and add some exported blocks in it.
