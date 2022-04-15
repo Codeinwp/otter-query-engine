@@ -6,6 +6,10 @@
 
 ## Getting Started
 
+### Commands
+##### Run - run the query from the input field
+##### Quick - run the query directly from the clipboard. It will need permission from the browser.
+
 [Optional] Fork [this repo](https://github.com/Codeinwp/otter-blocks-qa-templates). Make a folder, and add some exported blocks in it.
 
 ## Load the Query Engine in your browser.
