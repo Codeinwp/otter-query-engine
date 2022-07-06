@@ -1,11 +1,20 @@
 import {satisfies} from 'compare-versions';
+import {
+    existsCondition,
+    hasCondition,
+    hasName,
+    hasTags,
+    hasVersion,
+    WhereOptionalCondition,
+    WhereCondition
+} from "./conditions";
 
-type FileFeature = {
+export type FileFeature = {
     blocks?: string[],
     plugins?: string[]
 }
 
-type WhereQuery = {
+export type WhereQuery = {
     names?: string[],
     has?: string[] | FileFeature,
     mode?: "all" | "exclusive",
@@ -13,18 +22,20 @@ type WhereQuery = {
     version?: string
 }
 
-type TakeQuery = {
+export type TakeQuery = {
     shuffle?: boolean,
 }
 
-type FilesStructure = {
-    files?: {
-        name: string,
-        has: FileFeature,
-        tags?: string[]
-        comment?: string
-        version?: string
-    }[]
+export type FileStructure = {
+    name: string,
+    has: FileFeature,
+    tags?: string[]
+    comment?: string
+    version?: string
+}
+
+export type FilesStructure = {
+    files?: FileStructure[]
 }
 
 class QueryQA {
@@ -34,6 +45,8 @@ class QueryQA {
     private query: WhereQuery | undefined
     private maxResults: number | undefined
     private takeQuery: TakeQuery | undefined
+    private whereConditions: WhereCondition[]
+    private whereOptionalConditions: WhereOptionalCondition[]
 
     constructor() {
         this.sources = {
@@ -42,6 +55,17 @@ class QueryQA {
         }
         this.folder = "blocks"
         this.source = "otter"
+
+        this.whereConditions = [
+            existsCondition,
+            hasName,
+            hasCondition
+        ]
+
+        this.whereOptionalConditions = [
+            hasTags,
+            hasVersion
+        ]
     }
 
     select(folder: string) {
@@ -93,55 +117,15 @@ class QueryQA {
         }
 
         const index: FilesStructure = await respIndex.json();
-        let validFiles = index?.files?.filter(file => {
-            if (this.query === undefined) {
-                return true;
-            }
 
-            if (this.query?.names?.includes(file.name)) {
-                return true;
-            }
-
-            let valid = !Boolean(this.query?.names) || !Boolean(this.query?.has || !Boolean(this.query?.tags) || !Boolean(this.query?.version)) ;
-
-            if (this.query.mode === undefined || this.query.mode === "exclusive") {
-                if (Array.isArray(this.query?.has)) {
-                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.every(blockSlug => (this.query?.has as string[])?.includes(blockSlug))
-                } else {
-                    if (this.query?.has?.blocks !== undefined && file?.has?.blocks?.every(blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug))) {
-                        valid = true;
-                    }
-                    if (this.query?.has?.plugins !== undefined && file?.has?.plugins?.every(pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug))) {
-                        valid = true;
-                    }
-                }
-            } else {
-                if (Array.isArray(this.query?.has)) {
-                    valid = [...(file?.has?.blocks || []), ...(file?.has?.plugins || [])]?.some(blockSlug => (this.query?.has as string[])?.includes(blockSlug))
-                } else {
-                    if (this.query?.has?.blocks !== undefined && file?.has?.blocks?.some(blockSlug => (this.query?.has as FileFeature)?.blocks?.includes(blockSlug))) {
-                        valid = true;
-                    }
-                    if (this.query?.has?.plugins !== undefined && file?.has?.plugins?.some(pluginSlug => (this.query?.has as FileFeature)?.plugins?.includes(pluginSlug))) {
-                        valid = true;
-                    }
-                }
-            }
-
-            if (this.query?.tags) {
-                if (this.query.mode === undefined || this.query.mode === "exclusive") {
-                    valid = valid && Boolean(file?.tags?.every(blockTag => this.query?.tags?.includes(blockTag)))
-                } else {
-                    valid = valid && Boolean(file?.tags?.some(blockTags => this.query?.tags?.includes(blockTags)))
-                }
-            }
-
-            if (this.query?.version) {
-                valid = valid && satisfies(file.version, this.query.version)
-            }
-
-            return valid;
-        });
+        let validFiles = index?.files
+            ?.filter(file => this.whereConditions.some( cond => cond(this.query, file) ))
+            ?.filter(file => {
+                const x = this.whereOptionalConditions
+                    .map(cond => cond(this.query, file))
+                    .filter(c => c === 'unused');
+                return x?.length > 0 ? x.some(c => c) : true;
+            })
 
         if (this.takeQuery?.shuffle) {
             validFiles = validFiles
@@ -158,6 +142,38 @@ class QueryQA {
             files: validFiles,
             urls: validFiles?.map(({name}) => `${mainPath}/${name}.json`)
         }
+    }
+
+    async test() {
+        const {urls, files} = (await this.build()) || {urls: [] as string[]};
+
+        console.groupCollapsed(`Fetching ${urls?.length} files!`)
+        console.table(files.map(({name}) => name))
+        console.groupEnd()
+
+        urls?.forEach((url, i) => {
+            try {
+                setTimeout(() => {
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then((res) => {
+                            if (res.ok) return res.json();
+                            else throw new Error("Status code error: " + res.status)
+                        })
+                        .then(data => {
+                            if( data ) {
+                                console.log(`%c[Block ${i}] ${url}`, 'color: green;')
+                            }
+                        })
+                }, Math.floor(Math.random() * 10) * 10);
+            } catch (e) {
+                console.error(e)
+            }
+        })
     }
 
     async run() {
