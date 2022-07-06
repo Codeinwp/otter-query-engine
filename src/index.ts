@@ -1,4 +1,3 @@
-import {satisfies} from 'compare-versions';
 import {
     existsCondition,
     hasCondition,
@@ -8,6 +7,8 @@ import {
     WhereOptionalCondition,
     WhereCondition
 } from "./conditions";
+
+const VERSION = '0.1'
 
 export type FileFeature = {
     blocks?: string[],
@@ -248,7 +249,7 @@ class QueryQA {
         }
         settingsBar.insertBefore(btn, settingsBar.firstChild)
 
-        input.placeholder = "Paste the query"
+        input.placeholder = `Paste the query. v${VERSION}`
         input.style.minWidth = "250px"
         input.style.padding = "5px";
         settingsBar.insertBefore(input, settingsBar.firstChild)
