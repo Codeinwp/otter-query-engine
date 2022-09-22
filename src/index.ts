@@ -8,7 +8,7 @@ import {
     WhereCondition
 } from "./conditions";
 
-const VERSION = '0.1'
+const VERSION = '0.1.1'
 
 export type FileFeature = {
     blocks?: string[],
@@ -52,7 +52,8 @@ class QueryQA {
     constructor() {
         this.sources = {
             "otter": "https://raw.githubusercontent.com/Codeinwp/otter-blocks-qa-templates/main/",
-            "robert": "https://raw.githubusercontent.com/Soare-Robert-Daniel/otter-blocks-qa-templates/main/"
+            "robert": "https://raw.githubusercontent.com/Soare-Robert-Daniel/otter-blocks-qa-templates/main/",
+            "offline": "http://localhost:8085/"
         }
         this.folder = "blocks"
         this.source = "otter"
